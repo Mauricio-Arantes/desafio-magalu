@@ -9,3 +9,32 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+enum communicationTypes {
+  email
+  sms
+  push
+  whatsapp
+}
+
+model Communication {
+  id                String    @id @default(uuid())
+  shipping_date     DateTime
+  recipient         String
+  already_delivered Boolean   @default(false)
+  message           Message   @relation(fields: [messageId], references: [id])
+  messageId         String    @unique
+  deleted_at        DateTime?
+  updated_at        DateTime  @updatedAt
+  created_at        DateTime  @default(now())
+}
+
+model Message {
+  id              String             @id @default(uuid())
+  type            communicationTypes
+  content         String?
+  communicationId Communication?
+  deleted_at      DateTime?
+  updated_at      DateTime           @updatedAt
+  created_at      DateTime           @default(now())
+}
