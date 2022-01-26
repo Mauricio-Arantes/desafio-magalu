@@ -17,7 +17,8 @@ export class CommunicationController {
 
   @Post()
   create(@Body() createCommunicationDto: CreateCommunicationDto) {
-    return this.communicationService.create(createCommunicationDto);
+    
+    this.communicationService.create(createCommunicationDto);
   }
 
   @Get()
