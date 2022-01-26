@@ -25,6 +25,8 @@ model Communications {
   deleted_at        DateTime?
   updated_at        DateTime  @updatedAt
   created_at        DateTime  @default(now())
+  message           Messages? @relation(fields: [messagesId], references: [id])
+  messagesId        String?
 }
 
 model Messages {
@@ -34,4 +36,5 @@ model Messages {
   deleted_at     DateTime?
   updated_at     DateTime           @updatedAt
   created_at     DateTime           @default(now())
+  Communications Communications[]
 }
