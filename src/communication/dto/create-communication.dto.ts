@@ -7,7 +7,7 @@ enum TypeCommunicationDto {
 
 export class CreateCommunicationDto {
   shippingSchedule: string;
-  destiner: string;
+  receiver: string;
   message: {
     type: TypeCommunicationDto;
     content?: string;
