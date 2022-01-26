@@ -1,6 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from 'src/prisma.service';
 import { Communications, Prisma } from '@prisma/client';
+
+import { PrismaService } from 'src/prisma.service';
+
 import { UpdateCommunicationDto } from './dto/update-communication.dto';
 
 @Injectable()
@@ -8,9 +10,8 @@ export class CommunicationService {
   constructor(private prisma: PrismaService) { }
 
   async create(createCommunicationDto: Prisma.CommunicationsCreateInput): Promise<Communications> {
-    // This action adds a new communication;
     return this.prisma.communications.create({
-      data: { createCommunicationDto },
+      data: createCommunicationDto,
     })
   }
 
