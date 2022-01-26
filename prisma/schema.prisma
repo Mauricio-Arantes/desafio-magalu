@@ -17,23 +17,23 @@ enum communicationTypes {
   whatsapp
 }
 
-model Communication {
+model Communications {
   id                String    @id @default(uuid())
   shipping_date     DateTime
   recipient         String
   already_delivered Boolean   @default(false)
-  message           Message   @relation(fields: [messageId], references: [id])
+  message           Messages   @relation(fields: [messageId], references: [id])
   messageId         String    @unique
   deleted_at        DateTime?
   updated_at        DateTime  @updatedAt
   created_at        DateTime  @default(now())
 }
 
-model Message {
+model Messages {
   id              String             @id @default(uuid())
   type            communicationTypes
   content         String?
-  communicationId Communication?
+  communicationId Communications?
   deleted_at      DateTime?
   updated_at      DateTime           @updatedAt
   created_at      DateTime           @default(now())
