@@ -1,4 +1,4 @@
-import { IsString } from 'class-validator';
+import { IsEnum, IsString, ValidateNested } from 'class-validator';
 
 enum TypeCommunicationDto {
   email,
@@ -9,12 +9,19 @@ enum TypeCommunicationDto {
 
 export class CreateCommunicationDto {
   @IsString()
-  shippingSchedule: string;
+  shipping_date: string;
 
   @IsString()
-  receiver: string;
-  message: {
-    type: TypeCommunicationDto;
-    content?: string;
-  };
+  recipient: string;
+
+  @ValidateNested()
+  message: NestedMessagesDto;
+}
+
+class NestedMessagesDto {
+  @IsEnum(TypeCommunicationDto)
+  type: TypeCommunicationDto;
+
+  @IsString()
+  content?: string
 }
