@@ -1,3 +1,5 @@
+import { IsString } from 'class-validator';
+
 enum TypeCommunicationDto {
   email,
   sms,
@@ -6,7 +8,10 @@ enum TypeCommunicationDto {
 }
 
 export class CreateCommunicationDto {
+  @IsString()
   shippingSchedule: string;
+
+  @IsString()
   receiver: string;
   message: {
     type: TypeCommunicationDto;
