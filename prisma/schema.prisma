@@ -22,19 +22,16 @@ model Communications {
   shipping_date     DateTime
   recipient         String
   already_delivered Boolean   @default(false)
-  message           Messages   @relation(fields: [messageId], references: [id])
-  messageId         String    @unique
   deleted_at        DateTime?
   updated_at        DateTime  @updatedAt
   created_at        DateTime  @default(now())
 }
 
 model Messages {
-  id              String             @id @default(uuid())
-  type            communicationTypes
-  content         String?
-  communicationId Communications?
-  deleted_at      DateTime?
-  updated_at      DateTime           @updatedAt
-  created_at      DateTime           @default(now())
+  id             String             @id @default(uuid())
+  type           communicationTypes
+  content        String?
+  deleted_at     DateTime?
+  updated_at     DateTime           @updatedAt
+  created_at     DateTime           @default(now())
 }
