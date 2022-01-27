@@ -1,10 +1,12 @@
 import { IsEnum, IsString, ValidateNested } from 'class-validator';
+import { CommunicationTypes } from '@prisma/client'
 
-enum TypeCommunicationDto {
-  email,
-  sms,
-  push,
-  whatsapp,
+class NestedMessagesDto {
+  @IsEnum(CommunicationTypes)
+  type: CommunicationTypes;
+
+  @IsString()
+  content?: string
 }
 
 export class CreateCommunicationDto {
@@ -15,13 +17,5 @@ export class CreateCommunicationDto {
   recipient: string;
 
   @ValidateNested()
-  message: NestedMessagesDto;
-}
-
-class NestedMessagesDto {
-  @IsEnum(TypeCommunicationDto)
-  type: TypeCommunicationDto;
-
-  @IsString()
-  content?: string
+  message?: NestedMessagesDto;
 }

@@ -10,11 +10,11 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum communicationTypes {
-  email
-  sms
-  push
-  whatsapp
+enum CommunicationTypes {
+  EMAIL
+  SMS
+  PUSH
+  WHATSAP
 }
 
 model Communications {
@@ -26,15 +26,15 @@ model Communications {
   updated_at        DateTime  @updatedAt
   created_at        DateTime  @default(now())
   message           Messages? @relation(fields: [messageId], references: [id])
-  messageId         String?
+  messageId         String?   @unique
 }
 
 model Messages {
   id             String             @id @default(uuid())
-  type           communicationTypes
+  type           CommunicationTypes
   content        String?
   deleted_at     DateTime?
   updated_at     DateTime           @updatedAt
   created_at     DateTime           @default(now())
-  Communications Communications[]
+  Communications Communications?
 }
