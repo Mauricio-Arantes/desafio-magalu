@@ -1,5 +1,12 @@
-import { IsDateString, IsEnum, IsNotEmpty, IsNotEmptyObject, IsString, ValidateNested } from 'class-validator';
-import { CommunicationTypes } from '@prisma/client'
+import { CommunicationTypes } from '@prisma/client';
+import {
+  IsDateString,
+  IsEnum,
+  IsNotEmpty,
+  IsNotEmptyObject,
+  IsString,
+  ValidateNested,
+} from 'class-validator';
 
 class NestedMessagesDto {
   @IsEnum(CommunicationTypes)
@@ -7,7 +14,7 @@ class NestedMessagesDto {
   type: CommunicationTypes;
 
   @IsString()
-  content?: string
+  content?: string;
 }
 
 export class CreateCommunicationDto {
