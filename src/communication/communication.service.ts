@@ -15,17 +15,14 @@ export class CommunicationService {
   ): Promise<Communications> {
     const { recipient, shipping_date, message } = createCommunicationDto;
 
-    const communication = await this.prisma.communications.create({
-      data: { recipient, shipping_date },
-    });
-
-    await this.prisma.messages.create({
-      data: message,
-    });
-
-    return await this.prisma.communications.findUnique({
-      where: { id: communication.id },
-      include: { message: true },
+    return this.prisma.communications.create({
+      data: {
+        recipient,
+        shipping_date,
+        message: {
+          create: { ...message },
+        },
+      },
     });
   }
 

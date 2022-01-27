@@ -1,19 +1,25 @@
 import { CommunicationTypes } from '@prisma/client';
+import { Type } from 'class-transformer';
 import {
   IsDateString,
+  IsDefined,
   IsEnum,
   IsNotEmpty,
   IsNotEmptyObject,
+  IsOptional,
   IsString,
+  IsUppercase,
   ValidateNested,
 } from 'class-validator';
 
-class NestedMessagesDto {
+export class NestedMessagesDto {
   @IsEnum(CommunicationTypes)
   @IsNotEmpty()
+  @IsUppercase()
   type: CommunicationTypes;
 
   @IsString()
+  @IsOptional()
   content?: string;
 }
 
@@ -28,6 +34,8 @@ export class CreateCommunicationDto {
   recipient: string;
 
   @ValidateNested()
+  @IsDefined()
   @IsNotEmptyObject()
-  message?: NestedMessagesDto;
+  @Type(() => NestedMessagesDto)
+  message: NestedMessagesDto;
 }
