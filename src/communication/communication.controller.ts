@@ -13,6 +13,7 @@ import {
 import { CommunicationService } from './communication.service';
 import { CreateCommunicationDto } from './dto/create-communication.dto';
 import { FindAllCommunicationDto } from './dto/findall-communication.dto';
+import { FindOneCommunicationDto } from './dto/findOne-communication.dto';
 import { UpdateCommunicationDto } from './dto/update-communication.dto';
 
 @Controller('communication')
@@ -35,8 +36,8 @@ export class CommunicationController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.communicationService.findOne(+id);
+  findOne(@Param() params: FindOneCommunicationDto) {
+    return this.communicationService.findOne(params);
   }
 
   @Patch(':id')

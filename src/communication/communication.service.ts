@@ -5,6 +5,7 @@ import { PrismaService } from 'src/prisma.service';
 
 import { CreateCommunicationDto } from './dto/create-communication.dto';
 import { FindAllCommunicationDto } from './dto/findall-communication.dto';
+import { FindOneCommunicationDto } from './dto/findOne-communication.dto';
 import { UpdateCommunicationDto } from './dto/update-communication.dto';
 
 @Injectable()
@@ -33,13 +34,17 @@ export class CommunicationService {
       return this.prisma.communications.findMany({
         skip: initialValue,
         take: maxValue,
+        include: { message: true },
       });
     }
-    return this.prisma.communications.findMany({});
+    return this.prisma.communications.findMany({ include: { message: true } });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} communication`;
+  findOne({ id }: FindOneCommunicationDto) {
+    return this.prisma.communications.findUnique({
+      where: { id },
+      include: { message: true },
+    });
   }
 
   update(id: number, _updateCommunicationDto: UpdateCommunicationDto) {
