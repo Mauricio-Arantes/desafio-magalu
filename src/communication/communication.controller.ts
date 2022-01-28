@@ -6,6 +6,8 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
+  ParseIntPipe,
 } from '@nestjs/common';
 
 import { CommunicationService } from './communication.service';
@@ -23,8 +25,13 @@ export class CommunicationController {
   }
 
   @Get()
-  findAll(@Param() pagination: FindAllCommunicationDto) {
-    return this.communicationService.findAll(pagination);
+  findAll(
+    @Query('maxValue', ParseIntPipe)
+    maxValue: FindAllCommunicationDto['maxValue'],
+    @Query('initialValue', ParseIntPipe)
+    initialValue: FindAllCommunicationDto['initialValue'],
+  ) {
+    return this.communicationService.findAll({ maxValue, initialValue });
   }
 
   @Get(':id')

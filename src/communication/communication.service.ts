@@ -28,8 +28,7 @@ export class CommunicationService {
     });
   }
 
-  findAll(pagination: FindAllCommunicationDto) {
-    const { initialValue, maxValue } = pagination;
+  findAll({ maxValue, initialValue }: FindAllCommunicationDto) {
     if (initialValue && maxValue) {
       return this.prisma.communications.findMany({
         skip: initialValue,
