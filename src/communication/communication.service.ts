@@ -4,6 +4,7 @@ import { Communications } from '@prisma/client';
 import { PrismaService } from 'src/prisma.service';
 
 import { CreateCommunicationDto } from './dto/create-communication.dto';
+import { DeleteCommunicationDto } from './dto/delete-communication.dto';
 import { FindAllCommunicationDto } from './dto/findall-communication.dto';
 import { FindOneCommunicationDto } from './dto/findOne-communication.dto';
 import { PatchCommunicationDto } from './dto/patch-communication.dto';
@@ -66,7 +67,15 @@ export class CommunicationService {
     });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} communication`;
+  remove({ id }: DeleteCommunicationDto) {
+    const communication = this.prisma.communications.delete({
+      where: { id },
+    });
+
+    const message = this.prisma.messages.delete({
+      where: { id: communication['message_id'] },
+    });
+
+    this.prisma.$transaction([communication, message]);
   }
 }
