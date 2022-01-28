@@ -24,6 +24,7 @@ export class CommunicationService {
           create: { ...message },
         },
       },
+      include: { message: true },
     });
   }
 
