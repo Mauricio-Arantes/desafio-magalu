@@ -10,7 +10,6 @@ import {
   Patch,
   Post,
   Query,
-  Res,
 } from '@nestjs/common';
 
 import { CommunicationService } from './communication.service';
