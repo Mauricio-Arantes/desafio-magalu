@@ -32,7 +32,7 @@ export class CommunicationService {
   }
 
   findAll({ maxValue, initialValue }: FindAllCommunicationDto) {
-    if (initialValue && maxValue) {
+    if (initialValue > 0 && maxValue > 0) {
       return this.prisma.communications.findMany({
         skip: initialValue,
         take: maxValue,
@@ -67,15 +67,15 @@ export class CommunicationService {
     });
   }
 
-  remove({ id }: DeleteCommunicationDto) {
-    const communication = this.prisma.communications.delete({
-      where: { id },
-    });
+  async remove({ id }: DeleteCommunicationDto) {
+    return await this.prisma.$transaction(async (prisma) => {
+      const communication = await prisma.communications.delete({
+        where: { id },
+      });
 
-    const message = this.prisma.messages.delete({
-      where: { id: communication['message_id'] },
+      await prisma.messages.delete({
+        where: { id: communication.message_id },
+      });
     });
-
-    this.prisma.$transaction([communication, message]);
   }
 }

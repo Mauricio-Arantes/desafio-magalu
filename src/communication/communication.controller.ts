@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  DefaultValuePipe,
   Delete,
   Get,
   HttpCode,
@@ -31,9 +32,9 @@ export class CommunicationController {
 
   @Get()
   findAll(
-    @Query('maxValue', ParseIntPipe)
+    @Query('maxValue', new DefaultValuePipe(0), ParseIntPipe)
     maxValue: FindAllCommunicationDto['maxValue'],
-    @Query('initialValue', ParseIntPipe)
+    @Query('initialValue', new DefaultValuePipe(0), ParseIntPipe)
     initialValue: FindAllCommunicationDto['initialValue'],
   ) {
     return this.communicationService.findAll({ maxValue, initialValue });
