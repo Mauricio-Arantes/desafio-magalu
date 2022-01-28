@@ -10,6 +10,7 @@ import {
 
 import { CommunicationService } from './communication.service';
 import { CreateCommunicationDto } from './dto/create-communication.dto';
+import { FindAllCommunicationDto } from './dto/findall-communication.dto';
 import { UpdateCommunicationDto } from './dto/update-communication.dto';
 
 @Controller('communication')
@@ -22,8 +23,8 @@ export class CommunicationController {
   }
 
   @Get()
-  findAll() {
-    return this.communicationService.findAll();
+  findAll(@Param() pagination: FindAllCommunicationDto) {
+    return this.communicationService.findAll(pagination);
   }
 
   @Get(':id')

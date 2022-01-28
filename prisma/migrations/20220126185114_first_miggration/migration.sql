@@ -9,7 +9,7 @@ CREATE TABLE "Communication" (
     "already_delivered" BOOLEAN NOT NULL DEFAULT false,
     "messageId" TEXT NOT NULL,
     "deleted_at" TIMESTAMP(3),
-    "updated_at" TIMESTAMP(3) NOT NULL,
+    "updated_at"sd TIMESTAMP(3) NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "Communication_pkey" PRIMARY KEY ("id")

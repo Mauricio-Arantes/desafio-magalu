@@ -4,6 +4,7 @@ import { Communications } from '@prisma/client';
 import { PrismaService } from 'src/prisma.service';
 
 import { CreateCommunicationDto } from './dto/create-communication.dto';
+import { FindAllCommunicationDto } from './dto/findall-communication.dto';
 import { UpdateCommunicationDto } from './dto/update-communication.dto';
 
 @Injectable()
@@ -26,15 +27,22 @@ export class CommunicationService {
     });
   }
 
-  findAll() {
-    return `This action returns all communication`;
+  findAll(pagination: FindAllCommunicationDto) {
+    const { initialValue, maxValue } = pagination;
+    if (initialValue && maxValue) {
+      return this.prisma.communications.findMany({
+        skip: initialValue,
+        take: maxValue,
+      });
+    }
+    return this.prisma.communications.findMany({});
   }
 
   findOne(id: number) {
     return `This action returns a #${id} communication`;
   }
 
-  update(id: number, updateCommunicationDto: UpdateCommunicationDto) {
+  update(id: number, _updateCommunicationDto: UpdateCommunicationDto) {
     return `This action updates a #${id} communication`;
   }
 
