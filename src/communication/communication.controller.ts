@@ -3,15 +3,18 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
   Param,
   ParseIntPipe,
   Patch,
   Post,
   Query,
+  Res,
 } from '@nestjs/common';
 
 import { CommunicationService } from './communication.service';
 import { CreateCommunicationDto } from './dto/create-communication.dto';
+import { DeleteCommunicationDto } from './dto/delete-communication.dto';
 import { FindAllCommunicationDto } from './dto/findall-communication.dto';
 import { FindOneCommunicationDto } from './dto/findOne-communication.dto';
 import { PatchCommunicationDto } from './dto/patch-communication.dto';
@@ -50,7 +53,8 @@ export class CommunicationController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.communicationService.remove(+id);
+  @HttpCode(204)
+  remove(@Param() params: DeleteCommunicationDto) {
+    return this.communicationService.remove(params);
   }
 }
