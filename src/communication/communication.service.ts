@@ -6,6 +6,7 @@ import { PrismaService } from 'src/prisma.service';
 import { CreateCommunicationDto } from './dto/create-communication.dto';
 import { FindAllCommunicationDto } from './dto/findall-communication.dto';
 import { FindOneCommunicationDto } from './dto/findOne-communication.dto';
+import { PatchCommunicationDto } from './dto/patch-communication.dto';
 import { UpdateCommunicationDto } from './dto/update-communication.dto';
 
 @Injectable()
@@ -47,8 +48,22 @@ export class CommunicationService {
     });
   }
 
-  update(id: number, _updateCommunicationDto: UpdateCommunicationDto) {
-    return `This action updates a #${id} communication`;
+  update(
+    { id }: PatchCommunicationDto,
+    updateCommunicationDto: UpdateCommunicationDto,
+  ) {
+    return this.prisma.communications.update({
+      where: { id },
+      data: {
+        ...updateCommunicationDto,
+        message: {
+          update: {
+            ...updateCommunicationDto['message'],
+          },
+        },
+      },
+      include: { message: true },
+    });
   }
 
   remove(id: number) {

@@ -1,19 +1,20 @@
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  Patch,
-  Param,
+  Controller,
   Delete,
-  Query,
+  Get,
+  Param,
   ParseIntPipe,
+  Patch,
+  Post,
+  Query,
 } from '@nestjs/common';
 
 import { CommunicationService } from './communication.service';
 import { CreateCommunicationDto } from './dto/create-communication.dto';
 import { FindAllCommunicationDto } from './dto/findall-communication.dto';
 import { FindOneCommunicationDto } from './dto/findOne-communication.dto';
+import { PatchCommunicationDto } from './dto/patch-communication.dto';
 import { UpdateCommunicationDto } from './dto/update-communication.dto';
 
 @Controller('communication')
@@ -42,10 +43,10 @@ export class CommunicationController {
 
   @Patch(':id')
   update(
-    @Param('id') id: string,
+    @Param() params: PatchCommunicationDto,
     @Body() updateCommunicationDto: UpdateCommunicationDto,
   ) {
-    return this.communicationService.update(+id, updateCommunicationDto);
+    return this.communicationService.update(params, updateCommunicationDto);
   }
 
   @Delete(':id')
