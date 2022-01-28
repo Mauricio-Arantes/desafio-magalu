@@ -17,16 +17,22 @@ enum CommunicationTypes {
   WHATSAP
 }
 
+enum CommunicationStatus {
+  PENDING
+  SENT
+  CANCELLED
+}
+
 model Communications {
-  id                String    @id @default(uuid())
-  shipping_date     DateTime
-  recipient         String
-  already_delivered Boolean   @default(false)
-  deleted_at        DateTime?
-  updated_at        DateTime  @updatedAt
-  created_at        DateTime  @default(now())
-  message           Messages @relation(fields: [message_id], references: [id])
-  message_id        String   @unique
+  id            String              @id @default(uuid())
+  shipping_date DateTime
+  recipient     String
+  status        CommunicationStatus @default(PENDING)
+  deleted_at    DateTime?
+  updated_at    DateTime            @updatedAt
+  created_at    DateTime            @default(now())
+  message       Messages            @relation(fields: [message_id], references: [id])
+  message_id    String              @unique
 }
 
 model Messages {
