@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { CommunicationTypes } from '@prisma/client';
+import { CommunicationStatus, CommunicationTypes } from '@prisma/client';
 
 import { PrismaService } from '../database/prisma.service';
 import { CommunicationController } from './communication.controller';
@@ -40,6 +40,10 @@ describe('CommunicationController', () => {
     create: jest.fn().mockResolvedValue(commomResponse),
     findAll: jest.fn().mockResolvedValue([commomResponse]),
     findOne: jest.fn().mockResolvedValue(commomResponse),
+    update: jest.fn().mockResolvedValue({
+      ...commomResponse,
+      status: CommunicationStatus.SENT,
+    }),
   };
 
   beforeEach(async () => {
@@ -112,6 +116,42 @@ describe('CommunicationController', () => {
 
       expect(
         controller.findOne({ id: '19bbd769-55c8-4781-8921-d5337a15c269' }),
+      ).rejects.toThrowError();
+    });
+  });
+
+  describe('Update', () => {
+    it('should update communication', async () => {
+      const result = await controller.update(
+        {
+          id: '19bbd769-55c8-4781-8921-d5337a15c269',
+        },
+        expectedMinimalDto,
+      );
+
+      expect(result).toEqual({
+        ...commomResponse,
+        status: CommunicationStatus.SENT,
+      });
+      expect(service.update).toHaveBeenCalledTimes(1);
+      expect(service.update).lastCalledWith(
+        {
+          id: '19bbd769-55c8-4781-8921-d5337a15c269',
+        },
+        expectedMinimalDto,
+      );
+    });
+
+    it('should throw a exception', async () => {
+      jest.spyOn(service, 'update').mockRejectedValueOnce(new Error());
+
+      expect(
+        controller.update(
+          {
+            id: '19bbd769-55c8-4781-8921-d5337a15c269',
+          },
+          expectedMinimalDto,
+        ),
       ).rejects.toThrowError();
     });
   });
