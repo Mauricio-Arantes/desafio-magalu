@@ -105,7 +105,7 @@ describe('FindAll', () => {
 });
 
 describe('FindOne', () => {
-  it('should return a array of communication', async () => {
+  it('should return one communication', async () => {
     prismaService.communications.findUnique = jest
       .fn()
       .mockReturnValueOnce(commomResponse);
@@ -131,7 +131,7 @@ describe('FindOne', () => {
 });
 
 describe('Update', () => {
-  it('should return a array of communication', async () => {
+  it('should update one communication', async () => {
     prismaService.communications.update = jest.fn().mockReturnValueOnce({
       ...commomResponse,
       status: CommunicationStatus.SENT,
