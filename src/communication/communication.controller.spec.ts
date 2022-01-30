@@ -18,19 +18,6 @@ describe('CommunicationController', () => {
     },
   };
 
-  const expectedCompleteDto: CreateCommunicationDto = {
-    ...expectedMinimalDto,
-    message: {
-      type: CommunicationTypes.PUSH,
-      content: 'Ta maluco ta doidão',
-    },
-  };
-
-  const wrongDto = {
-    ...expectedMinimalDto,
-    message: null,
-  };
-
   const commomResponse = {
     id: '19bbd769-55c8-4781-8921-d5337a15c269',
     shipping_date: '2022-01-28T02:23:56.747Z',
@@ -52,6 +39,7 @@ describe('CommunicationController', () => {
   const mockCommunicationService = {
     create: jest.fn().mockResolvedValue(commomResponse),
     findAll: jest.fn().mockResolvedValue([commomResponse]),
+    findOne: jest.fn().mockResolvedValue(commomResponse),
   };
 
   beforeEach(async () => {
@@ -89,7 +77,7 @@ describe('CommunicationController', () => {
   });
 
   describe('FindAll', () => {
-    it('FindAll should return a array of communication', async () => {
+    it('should return a array of communication', async () => {
       const result = await controller.findAll(0, 0);
 
       expect(result).toEqual([commomResponse]);
@@ -106,17 +94,25 @@ describe('CommunicationController', () => {
     // });
   });
 
-  it('POST should redirect the DTO to a called function', () => {
-    expect(controller.create(expectedMinimalDto)).toBeDefined();
-    expect(controller.create(expectedCompleteDto)).toBeDefined();
-  });
+  describe('FindOne', () => {
+    it('should get one communication', async () => {
+      const result = await controller.findOne({
+        id: '19bbd769-55c8-4781-8921-d5337a15c269',
+      });
 
-  it('POST should redirect the DTO to a called function', () => {
-    expect(controller.create(expectedMinimalDto)).toBeDefined();
-    expect(controller.create(expectedCompleteDto)).toBeDefined();
-  });
+      expect(result).toEqual(commomResponse);
+      expect(service.findOne).toHaveBeenCalledTimes(1);
+      expect(service.findOne).lastCalledWith({
+        id: '19bbd769-55c8-4781-8921-d5337a15c269',
+      });
+    });
 
-  it('should get all users', () => {
-    const dto = {};
+    it('should throw a exception', () => {
+      jest.spyOn(service, 'findOne').mockRejectedValueOnce(new Error());
+
+      expect(
+        controller.findOne({ id: '19bbd769-55c8-4781-8921-d5337a15c269' }),
+      ).rejects.toThrowError();
+    });
   });
 });
