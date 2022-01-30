@@ -6,46 +6,47 @@ import { CommunicationController } from './communication.controller';
 import { CommunicationService } from './communication.service';
 import { CreateCommunicationDto } from './dto/create-communication.dto';
 
-describe('CommunicationController', () => {
-  let controller: CommunicationController;
-  let service: CommunicationService;
+let controller: CommunicationController;
+let service: CommunicationService;
 
-  const expectedMinimalDto: CreateCommunicationDto = {
-    shipping_date: new Date().toString(),
-    recipient: 'Boneco de teste',
-    message: {
-      type: CommunicationTypes.EMAIL,
-    },
-  };
+const expectedMinimalDto: CreateCommunicationDto = {
+  shipping_date: new Date().toString(),
+  recipient: 'Boneco de teste',
+  message: {
+    type: CommunicationTypes.EMAIL,
+  },
+};
 
-  const commomResponse = {
-    id: '19bbd769-55c8-4781-8921-d5337a15c269',
-    shipping_date: '2022-01-28T02:23:56.747Z',
-    recipient: 'Boneco de teste',
-    status: 'PENDING',
+const commomResponse = {
+  id: '19bbd769-55c8-4781-8921-d5337a15c269',
+  shipping_date: '2022-01-28T02:23:56.747Z',
+  recipient: 'Boneco de teste',
+  status: 'PENDING',
+  deleted_at: null,
+  updated_at: '2022-01-28T02:23:56.794Z',
+  created_at: '2022-01-28T02:23:56.793Z',
+  message_id: '1dd15369-94e5-431f-b9ab-18d9c259405e',
+  message: {
+    id: '1dd15369-94e5-431f-b9ab-18d9c259405e',
+    type: 'EMAIL',
+    content: null,
     deleted_at: null,
     updated_at: '2022-01-28T02:23:56.794Z',
     created_at: '2022-01-28T02:23:56.793Z',
-    message_id: '1dd15369-94e5-431f-b9ab-18d9c259405e',
-    message: {
-      id: '1dd15369-94e5-431f-b9ab-18d9c259405e',
-      type: 'EMAIL',
-      content: null,
-      deleted_at: null,
-      updated_at: '2022-01-28T02:23:56.794Z',
-      created_at: '2022-01-28T02:23:56.793Z',
-    },
-  };
-  const mockCommunicationService = {
-    create: jest.fn().mockResolvedValue(commomResponse),
-    findAll: jest.fn().mockResolvedValue([commomResponse]),
-    findOne: jest.fn().mockResolvedValue(commomResponse),
-    update: jest.fn().mockResolvedValue({
-      ...commomResponse,
-      status: CommunicationStatus.SENT,
-    }),
-  };
+  },
+};
+const mockCommunicationService = {
+  create: jest.fn().mockResolvedValue(commomResponse),
+  findAll: jest.fn().mockResolvedValue([commomResponse]),
+  findOne: jest.fn().mockResolvedValue(commomResponse),
+  update: jest.fn().mockResolvedValue({
+    ...commomResponse,
+    status: CommunicationStatus.SENT,
+  }),
+  remove: jest.fn().mockResolvedValue(undefined),
+};
 
+describe('CommunicationController', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [CommunicationController],
@@ -152,6 +153,26 @@ describe('CommunicationController', () => {
           },
           expectedMinimalDto,
         ),
+      ).rejects.toThrowError();
+    });
+  });
+
+  describe('Delete', () => {
+    it('should delete communication', async () => {
+      const result = await controller.remove({
+        id: '19bbd769-55c8-4781-8921-d5337a15c269',
+      });
+
+      expect(result).toBeUndefined();
+    });
+
+    it('should throw an error', async () => {
+      jest.spyOn(service, 'remove').mockRejectedValueOnce(new Error());
+
+      expect(
+        controller.remove({
+          id: '19bbd769-55c8-4781-8921-d5337a15c269',
+        }),
       ).rejects.toThrowError();
     });
   });
