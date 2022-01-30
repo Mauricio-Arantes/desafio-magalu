@@ -1,10 +1,16 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { CommunicationStatus, CommunicationTypes } from '@prisma/client';
+import {
+  CommunicationStatus,
+  CommunicationTypes,
+  prisma,
+} from '@prisma/client';
 
+import { PrismaService } from '../database/prisma.service';
 import { CommunicationService } from './communication.service';
 import { CreateCommunicationDto } from './dto/create-communication.dto';
 
-let service: CommunicationService;
+let communicationService: CommunicationService;
+let prismaService: PrismaService;
 
 const expectedMinimalDto: CreateCommunicationDto = {
   shipping_date: new Date().toString(),
@@ -33,36 +39,67 @@ const commomResponse = {
   },
 };
 
-const mockCommunicationService = {
-  create: jest.fn().mockResolvedValue(commomResponse),
-  findMany: jest.fn().mockResolvedValue([commomResponse]),
-  findUnique: jest.fn().mockResolvedValue(commomResponse),
-  update: jest.fn().mockResolvedValue({
-    ...commomResponse,
-    status: CommunicationStatus.SENT,
-  }),
-  delete: jest.fn().mockResolvedValue(undefined),
-};
-
 describe('CommunicationService', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [CommunicationService],
-    })
-      .overrideProvider(CommunicationService)
-      .useValue(mockCommunicationService)
-      .compile();
+      providers: [CommunicationService, PrismaService],
+    }).compile();
 
-    service = module.get<CommunicationService>(CommunicationService);
+    communicationService =
+      module.get<CommunicationService>(CommunicationService);
+    prismaService = module.get<PrismaService>(PrismaService);
   });
 
   it('should be instancied', () => {
-    expect(service).toBeDefined();
+    expect(communicationService).toBeDefined();
+    expect(prismaService).toBeDefined();
   });
 });
 
-describe('findAll', () => {
-  it('should return an array of communications', async () => {
-    // Escrever teste
+describe('Create', () => {
+  it('should create a new communication', async () => {
+    prismaService.communications.create = jest
+      .fn()
+      .mockReturnValueOnce(commomResponse);
+
+    const result = await communicationService.create(expectedMinimalDto);
+
+    expect(result).toEqual(commomResponse);
+    expect(prismaService.communications.create).toHaveBeenCalledTimes(1);
+  });
+
+  it('should throw an exception', () => {
+    jest
+      .spyOn(communicationService, 'create')
+      .mockRejectedValueOnce(new Error());
+
+    expect(
+      communicationService.create(expectedMinimalDto),
+    ).rejects.toThrowError();
+  });
+});
+
+describe('FindAll', () => {
+  it('should return a array of communication', async () => {
+    prismaService.communications.findMany = jest
+      .fn()
+      .mockReturnValueOnce([commomResponse]);
+    const result = await communicationService.findAll({
+      initialValue: 0,
+      maxValue: 0,
+    });
+
+    expect(result).toEqual([commomResponse]);
+    expect(prismaService.communications.findMany).toHaveBeenCalledTimes(1);
+  });
+
+  it('should throw a exception', () => {
+    jest
+      .spyOn(communicationService, 'findAll')
+      .mockRejectedValueOnce(new Error());
+
+    expect(
+      communicationService.findAll({ initialValue: 0, maxValue: 0 }),
+    ).rejects.toThrowError();
   });
 });
