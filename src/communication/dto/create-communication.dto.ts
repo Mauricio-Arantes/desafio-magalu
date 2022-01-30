@@ -1,4 +1,4 @@
-import { CommunicationTypes } from '@prisma/client';
+import { CommunicationStatus, CommunicationTypes } from '@prisma/client';
 import { Type } from 'class-transformer';
 import {
   IsDateString,
@@ -28,6 +28,12 @@ export class CreateCommunicationDto {
   @IsNotEmpty()
   @IsDateString()
   shipping_date: string;
+
+  @IsEnum(CommunicationStatus)
+  @IsNotEmpty()
+  @IsUppercase()
+  @IsOptional()
+  status?: CommunicationStatus;
 
   @IsString()
   @IsNotEmpty()
