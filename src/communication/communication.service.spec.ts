@@ -103,3 +103,29 @@ describe('FindAll', () => {
     ).rejects.toThrowError();
   });
 });
+
+describe('FindOne', () => {
+  it('should return a array of communication', async () => {
+    prismaService.communications.findUnique = jest
+      .fn()
+      .mockReturnValueOnce(commomResponse);
+    const result = await communicationService.findOne({
+      id: '19bbd769-55c8-4781-8921-d5337a15c269',
+    });
+
+    expect(result).toEqual(commomResponse);
+    expect(prismaService.communications.findUnique).toHaveBeenCalledTimes(1);
+  });
+
+  it('should throw a exception', () => {
+    jest
+      .spyOn(communicationService, 'findOne')
+      .mockRejectedValueOnce(new Error());
+
+    expect(
+      communicationService.findOne({
+        id: '19bbd769-55c8-4781-8921-d5337a15c269',
+      }),
+    ).rejects.toThrowError();
+  });
+});
