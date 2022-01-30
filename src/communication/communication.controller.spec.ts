@@ -122,7 +122,7 @@ describe('CommunicationController', () => {
         {
           id: '19bbd769-55c8-4781-8921-d5337a15c269',
         },
-        expectedMinimalDto,
+        { ...expectedMinimalDto, status: CommunicationStatus.SENT },
       );
 
       expect(result).toEqual({
@@ -134,7 +134,7 @@ describe('CommunicationController', () => {
         {
           id: '19bbd769-55c8-4781-8921-d5337a15c269',
         },
-        expectedMinimalDto,
+        { ...expectedMinimalDto, status: CommunicationStatus.SENT },
       );
     });
 
