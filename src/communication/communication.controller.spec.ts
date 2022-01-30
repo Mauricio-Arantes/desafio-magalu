@@ -1,7 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { CommunicationStatus, CommunicationTypes } from '@prisma/client';
 
-import { PrismaService } from '../database/prisma.service';
 import { CommunicationController } from './communication.controller';
 import { CommunicationService } from './communication.service';
 import { CreateCommunicationDto } from './dto/create-communication.dto';
@@ -93,10 +92,6 @@ describe('CommunicationController', () => {
 
       expect(controller.findAll(0, 0)).rejects.toThrowError();
     });
-
-    // it('should throw a error when passed the wrong parameters', () => {
-    //   expect(controller.findAll('a', 'c')).rejects.toThrowError();
-    // });
   });
 
   describe('FindOne', () => {
