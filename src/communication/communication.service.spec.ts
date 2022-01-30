@@ -129,3 +129,36 @@ describe('FindOne', () => {
     ).rejects.toThrowError();
   });
 });
+
+describe('Update', () => {
+  it('should return a array of communication', async () => {
+    prismaService.communications.update = jest.fn().mockReturnValueOnce({
+      ...commomResponse,
+      status: CommunicationStatus.SENT,
+    });
+
+    const result = await communicationService.update(
+      { id: '19bbd769-55c8-4781-8921-d5337a15c269' },
+      { ...expectedMinimalDto, status: CommunicationStatus.SENT },
+    );
+
+    expect(result).toEqual({
+      ...commomResponse,
+      status: CommunicationStatus.SENT,
+    });
+    expect(prismaService.communications.findUnique).toHaveBeenCalledTimes(1);
+  });
+
+  it('should throw a exception', () => {
+    jest
+      .spyOn(communicationService, 'update')
+      .mockRejectedValueOnce(new Error());
+
+    expect(
+      communicationService.update(
+        { id: '19bbd769-55c8-4781-8921-d5337a15c269' },
+        { ...expectedMinimalDto, status: CommunicationStatus.SENT },
+      ),
+    ).rejects.toThrowError();
+  });
+});
