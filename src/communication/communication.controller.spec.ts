@@ -50,7 +50,7 @@ describe('CommunicationController', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [CommunicationController],
-      providers: [CommunicationService, PrismaService],
+      providers: [CommunicationService],
     })
       .overrideProvider(CommunicationService)
       .useValue(mockCommunicationService)

@@ -1,8 +1,15 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
-import { PrismaService } from '../database/prisma.service';
 import { CommunicationController } from './communication.controller';
 import { CommunicationService } from './communication.service';
+
+const mockCommunicationService = {
+  create: jest.fn(),
+  findMany: jest.fn(),
+  findUnique: jest.fn(),
+  update: jest.fn(),
+  delete: jest.fn(),
+};
 
 describe('CommunicationService', () => {
   let service: CommunicationService;
@@ -10,9 +17,12 @@ describe('CommunicationService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [CommunicationService, PrismaService],
+      providers: [CommunicationService],
       controllers: [CommunicationController],
-    }).compile();
+    })
+      .overrideProvider(CommunicationService)
+      .useValue(mockCommunicationService)
+      .compile();
 
     service = module.get<CommunicationService>(CommunicationService);
     controller = module.get<CommunicationController>(CommunicationController);
