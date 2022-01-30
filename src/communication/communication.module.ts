@@ -1,6 +1,6 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 
-import { PrismaService } from 'src/prisma.service';
+import { PrismaService } from 'src/database/prisma.service';
 
 import { LoggerMiddleware } from '../middleware/logger.middleware';
 import { CommunicationController } from './communication.controller';

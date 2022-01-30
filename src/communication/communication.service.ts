@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Communications } from '@prisma/client';
 
-import { PrismaService } from 'src/prisma.service';
+import { PrismaService } from 'src/database/prisma.service';
 
 import { CreateCommunicationDto } from './dto/create-communication.dto';
 import { DeleteCommunicationDto } from './dto/delete-communication.dto';
