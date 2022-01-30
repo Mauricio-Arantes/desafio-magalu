@@ -18,7 +18,7 @@ describe('CommunicationService', () => {
     controller = module.get<CommunicationController>(CommunicationController);
   });
 
-  it('should be defined', () => {
+  it('should be instancied', () => {
     expect(service).toBeDefined();
     expect(controller).toBeDefined();
   });
