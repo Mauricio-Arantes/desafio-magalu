@@ -162,3 +162,27 @@ describe('Update', () => {
     ).rejects.toThrowError();
   });
 });
+
+describe('Remove', () => {
+  it('should delete a communication', async () => {
+    communicationService.remove = jest.fn().mockResolvedValue(undefined);
+
+    const result = await communicationService.remove({
+      id: '19bbd769-55c8-4781-8921-d5337a15c269',
+    });
+
+    expect(result).toBeUndefined();
+  });
+
+  it('should throw a exception', () => {
+    jest
+      .spyOn(communicationService, 'remove')
+      .mockRejectedValueOnce(new Error());
+
+    expect(
+      communicationService.remove({
+        id: '19bbd769-55c8-4781-8921-d5337a15c269',
+      }),
+    ).rejects.toThrowError();
+  });
+});
