@@ -7,8 +7,6 @@ import { CommunicationErrors } from '../src/api-errors/communication';
 import { CommunicationModule } from '../src/communication/communication.module';
 import { PrismaService } from '../src/database/prisma.service';
 
-let prismaService: PrismaService;
-
 const payload = {
   commomResponse: {
     id: '19bbd769-55c8-4781-8921-d5337a15c269',
@@ -61,7 +59,6 @@ describe('CommunicationModule (functional)', () => {
       .useValue(mockPrismaRepository)
       .compile();
 
-    prismaService = moduleFixture.get<PrismaService>(PrismaService);
     app = moduleFixture.createNestApplication();
     app.useGlobalPipes(
       new ValidationPipe({
