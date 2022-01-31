@@ -5,7 +5,7 @@ import { CommunicationErrors } from '../api-errors/communication';
 import { PrismaService } from '../database/prisma.service';
 import { CreateCommunicationDto } from './dto/create-communication.dto';
 import { DeleteCommunicationDto } from './dto/delete-communication.dto';
-import { FindAllCommunicationDto } from './dto/findall-communication.dto';
+import { FindAllCommunicationDto } from './dto/findAll-communication.dto';
 import { FindOneCommunicationDto } from './dto/findOne-communication.dto';
 import { PatchCommunicationDto } from './dto/patch-communication.dto';
 import { UpdateCommunicationDto } from './dto/update-communication.dto';
