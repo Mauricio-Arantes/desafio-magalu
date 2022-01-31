@@ -3,6 +3,13 @@ import { PrismaClient } from '@prisma/client';
 
 @Injectable()
 export class PrismaService extends PrismaClient implements OnModuleInit {
+  private addDeleteAtOnSearch(params) {
+    params.args['where'] = {
+      ...params.args['where'],
+      deleted_at: null,
+    };
+  }
+
   async onModuleInit() {
     await this.$connect();
     this.$use(async (params, next) => {
@@ -24,29 +31,25 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
       }
 
       // Not searching soft delete datas
-      let findMethod = false;
-      switch (params.action) {
-        case 'findUnique':
+      const actions = {
+        findUnique: () => {
           params.action = 'findFirst';
-          findMethod = true;
-          break;
-        case 'update':
-          params.action = 'updateMany';
-          findMethod = true;
-          break;
-        case 'findMany':
-          findMethod = true;
-          break;
-        case 'updateMany':
-          findMethod = true;
-          break;
-      }
-      if (findMethod) {
-        params.args['where'] = {
-          ...params.args['where'],
-          deleted_at: null,
-        };
-      }
+          this.addDeleteAtOnSearch(params);
+        },
+        update: () => {
+          params.action = 'findFirst';
+          this.addDeleteAtOnSearch(params);
+        },
+        findMany: () => {
+          this.addDeleteAtOnSearch(params);
+        },
+        updateMany: () => {
+          this.addDeleteAtOnSearch(params);
+        },
+      };
+
+      actions[params.action];
+
       return next(params);
     });
   }
