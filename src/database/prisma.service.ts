@@ -43,7 +43,7 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
           PrismaService.addDeleteAtOnSearch(params);
         },
         update: () => {
-          params.action = 'findFirst';
+          params.action = 'updateMany';
           PrismaService.addDeleteAtOnSearch(params);
         },
         findMany: () => {
