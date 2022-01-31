@@ -131,13 +131,22 @@ describe('Update', () => {
     prismaService.communications.update = jest
       .fn()
       .mockResolvedValueOnce({ count: 1 });
-    prismaService.communications.findUnique = jest.fn().mockResolvedValueOnce({
-      ...commomResponse,
-      status: CommunicationStatus.SENT,
-    });
+    prismaService.communications.findUnique = jest
+      .fn()
+      .mockResolvedValueOnce({
+        ...commomResponse,
+        status: CommunicationStatus.SENT,
+      })
+      .mockResolvedValueOnce({
+        ...commomResponse,
+        status: CommunicationStatus.SENT,
+      });
     prismaService.messages.update = jest
       .fn()
       .mockResolvedValueOnce({ count: 1 });
+    prismaService.$transaction = async (callback) => {
+      return await callback(prismaService);
+    };
 
     const result = await communicationService.update(
       { id: '19bbd769-55c8-4781-8921-d5337a15c269' },
@@ -148,7 +157,7 @@ describe('Update', () => {
       ...commomResponse,
       status: CommunicationStatus.SENT,
     });
-    expect(prismaService.communications.findUnique).toHaveBeenCalledTimes(1);
+    expect(prismaService.communications.findUnique).toHaveBeenCalledTimes(2);
   });
 
   it('should throw a exception', () => {
