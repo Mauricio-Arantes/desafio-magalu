@@ -65,6 +65,7 @@ export class CommunicationService {
   ) {
     const { recipient, shipping_date, status, message } =
       updateCommunicationDto;
+
     const result = await this.prisma.$transaction(async (prisma) => {
       const communication = await prisma.communications.update({
         where: { id },
