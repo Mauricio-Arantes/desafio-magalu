@@ -24,13 +24,16 @@ export class CommunicationService {
     private prisma: PrismaService,
   ) {}
   private readonly logger = new Logger(CommunicationService.name);
+  private cacheKey(id: string): string {
+    return `Communication--Service--${id}`;
+  }
 
   async create(
     createCommunicationDto: CreateCommunicationDto,
   ): Promise<Communications> {
     const { recipient, shipping_date, message } = createCommunicationDto;
 
-    return this.prisma.communications.create({
+    const result = await this.prisma.communications.create({
       data: {
         recipient,
         shipping_date,
@@ -40,6 +43,19 @@ export class CommunicationService {
       },
       include: { message: true },
     });
+
+    if (!result) {
+      this.logger.error(`Error trying create a communication`, {
+        createCommunicationDto,
+      });
+      throw new HttpException(
+        CommunicationErrors.CommunicationNotFound,
+        CommunicationErrors.CommunicationNotFound.statusCode,
+      );
+    }
+
+    this.cacheManager.set(this.cacheKey(result.id), result);
+    return result;
   }
 
   findAll({ maxValue, initialValue }: FindAllCommunicationDto) {
