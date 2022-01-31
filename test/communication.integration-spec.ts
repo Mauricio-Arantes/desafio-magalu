@@ -147,4 +147,34 @@ describe('CommunicationModule (functional)', () => {
         });
     });
   });
+
+  describe('REMOVE', () => {
+    it('/communication/:id --> its a valid ID', () => {
+      return request(app.getHttpServer())
+        .del('/communication/19bbd799-55c8-4781-8921-d5337a15c269')
+        .set('Accept', 'application/json')
+        .expect(204);
+    });
+
+    it('/communication/:id --> id its not a valid uuid', () => {
+      return request(app.getHttpServer())
+        .del('/communication/19bbd799-55c8-4781-8921-d5337a15c269')
+        .set('Accept', 'application/json')
+        .expect(400, {
+          statusCode: 400,
+          message: ['id must be a UUID'],
+          error: 'Bad Request',
+        });
+    });
+
+    it('/communication/:id --> id is not exists', () => {
+      return request(app.getHttpServer())
+        .del('/communication/19bbd799-55c8-4781-8921-d5337a15c269')
+        .set('Accept', 'application/json')
+        .expect('Content-Type', /json/)
+        .expect(CommunicationErrors.NotFound.statusCode, {
+          ...CommunicationErrors.NotFound,
+        });
+    });
+  });
 });
