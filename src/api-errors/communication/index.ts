@@ -7,4 +7,10 @@ export const CommunicationErrors = {
     error: 'Not Found',
     apiErrorCode: '0001',
   },
+  CommunicationNotFound: {
+    statusCode: HttpStatus.NOT_FOUND,
+    message: ['Communication cannot be created'],
+    error: 'Not Found',
+    apiErrorCode: '0002',
+  },
 };
