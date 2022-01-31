@@ -29,10 +29,11 @@ const payload = {
 const mockPrismaRepository = {
   communications: {
     findMany: jest.fn().mockResolvedValueOnce([payload.commomResponse]),
+    findUnique: jest.fn().mockResolvedValueOnce(payload.commomResponse),
   },
 };
 
-describe('AppController (e2e)', () => {
+describe('CommunicationModule (functional)', () => {
   let app: INestApplication;
 
   beforeEach(async () => {
@@ -56,17 +57,37 @@ describe('AppController (e2e)', () => {
     it('/communication (GET)', () => {
       return request(app.getHttpServer())
         .get('/communication')
-        .expect(200)
-        .expect([payload.commomResponse]);
+        .set('Accept', 'application/json')
+        .expect('Content-Type', /json/)
+        .expect(200, [payload.commomResponse]);
     });
   });
 
   describe('GET ONE', () => {
-    it('/communication/:id', () => {
+    it('/communication/:id --> its a valid id', () => {
       return request(app.getHttpServer())
         .get('/communication/19bbd769-55c8-4781-8921-d5337a15c269')
-        .expect(200)
-        .expect(payload.commomResponse);
+        .set('Accept', 'application/json')
+        .expect('Content-Type', /json/)
+        .expect(200, payload.commomResponse);
+    });
+    it('/communication/:id --> id its not a valid uuid', () => {
+      return request(app.getHttpServer())
+        .get('/communication/this-is-not-a-valid-uuid')
+        .set('Accept', 'application/json')
+        .expect('Content-Type', /json/)
+        .expect(400, {
+          statusCode: 400,
+          message: ['id must be a UUID'],
+          error: 'Bad Request',
+        });
+    });
+    it('/communication/:id --> id its not exists', () => {
+      return request(app.getHttpServer())
+        .get('/communication/19bbd779-55c8-4781-8921-d5337a15c269')
+        .set('Accept', 'application/json')
+        .expect('Content-Type', /json/)
+        .expect(404);
     });
   });
 });
