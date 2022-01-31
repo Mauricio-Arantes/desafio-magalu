@@ -1,5 +1,12 @@
-import { HttpException, Injectable, Logger } from '@nestjs/common';
+import {
+  HttpException,
+  Injectable,
+  Logger,
+  CACHE_MANAGER,
+  Inject,
+} from '@nestjs/common';
 import { Communications } from '@prisma/client';
+import { Cache } from 'cache-manager';
 
 import { CommunicationErrors } from '../api-errors/communication';
 import { PrismaService } from '../database/prisma.service';
@@ -12,7 +19,10 @@ import { UpdateCommunicationDto } from './dto/update-communication.dto';
 
 @Injectable()
 export class CommunicationService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
+    private prisma: PrismaService,
+  ) {}
   private readonly logger = new Logger(CommunicationService.name);
 
   async create(
