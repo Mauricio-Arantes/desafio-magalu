@@ -128,10 +128,16 @@ describe('FindOne', () => {
 
 describe('Update', () => {
   it('should update one communication', async () => {
-    prismaService.communications.update = jest.fn().mockReturnValueOnce({
+    prismaService.communications.update = jest
+      .fn()
+      .mockResolvedValueOnce({ count: 1 });
+    prismaService.communications.findUnique = jest.fn().mockResolvedValueOnce({
       ...commomResponse,
       status: CommunicationStatus.SENT,
     });
+    prismaService.messages.update = jest
+      .fn()
+      .mockResolvedValueOnce({ count: 1 });
 
     const result = await communicationService.update(
       { id: '19bbd769-55c8-4781-8921-d5337a15c269' },
