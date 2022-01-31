@@ -17,6 +17,6 @@ services:
     image: redis
     restart: always
     ports:
-      - "7777:7777"
+      - "6379:6379"
 volumes:
     pg_data:

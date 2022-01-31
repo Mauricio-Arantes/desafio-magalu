@@ -37,24 +37,31 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
       }
 
       // Not searching soft delete datas
+      let saveMethod = false;
       const actions = {
         findUnique: () => {
           params.action = 'findFirst';
           PrismaService.addDeleteAtOnSearch(params);
+          saveMethod = true;
         },
         update: () => {
           params.action = 'updateMany';
           PrismaService.addDeleteAtOnSearch(params);
+          saveMethod = true;
         },
         findMany: () => {
           PrismaService.addDeleteAtOnSearch(params);
+          saveMethod = true;
         },
         updateMany: () => {
           PrismaService.addDeleteAtOnSearch(params);
+          saveMethod = true;
         },
       };
 
-      actions[params.action]();
+      if (saveMethod) {
+        actions[params.action]();
+      }
 
       return next(params);
     });

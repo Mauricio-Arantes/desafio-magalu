@@ -1,5 +1,12 @@
-import { HttpException, Injectable, Logger } from '@nestjs/common';
+import {
+  HttpException,
+  Injectable,
+  Logger,
+  CACHE_MANAGER,
+  Inject,
+} from '@nestjs/common';
 import { Communications } from '@prisma/client';
+import { Cache } from 'cache-manager';
 
 import { CommunicationErrors } from '../api-errors/communication';
 import { PrismaService } from '../database/prisma.service';
@@ -12,15 +19,21 @@ import { UpdateCommunicationDto } from './dto/update-communication.dto';
 
 @Injectable()
 export class CommunicationService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
+    private prisma: PrismaService,
+  ) {}
   private readonly logger = new Logger(CommunicationService.name);
+  private cacheKey(id: string): string {
+    return `Communication--Service--${id}`;
+  }
 
   async create(
     createCommunicationDto: CreateCommunicationDto,
   ): Promise<Communications> {
     const { recipient, shipping_date, message } = createCommunicationDto;
 
-    return this.prisma.communications.create({
+    const result = await this.prisma.communications.create({
       data: {
         recipient,
         shipping_date,
@@ -30,6 +43,19 @@ export class CommunicationService {
       },
       include: { message: true },
     });
+
+    if (!result) {
+      this.logger.error(`Error trying create a communication`, {
+        createCommunicationDto,
+      });
+      throw new HttpException(
+        CommunicationErrors.CommunicationNotFound,
+        CommunicationErrors.CommunicationNotFound.statusCode,
+      );
+    }
+
+    this.cacheManager.set(this.cacheKey(result.id), result);
+    return result;
   }
 
   findAll({ maxValue, initialValue }: FindAllCommunicationDto) {
