@@ -14,33 +14,33 @@ import {
 } from 'class-validator';
 
 export class NestedMessagesDto {
-  @ApiProperty({ enum: [CommunicationTypes] })
+  @ApiProperty({ type: 'string', enum: CommunicationTypes })
   @IsEnum(CommunicationTypes)
   @IsNotEmpty()
   @IsUppercase()
   type: CommunicationTypes;
 
-  @ApiPropertyOptional()
+  @ApiPropertyOptional({ description: 'menssage body', default: 'Olá!' })
   @IsString()
   @IsOptional()
   content?: string;
 }
 
 export class CreateCommunicationDto {
-  @ApiProperty()
+  @ApiProperty({ description: 'receive a ISO8601 date', format: 'date' })
   @IsString()
   @IsNotEmpty()
   @IsDateString()
   shipping_date: string;
 
-  @ApiPropertyOptional({ enum: [CommunicationStatus] })
+  @ApiPropertyOptional({ type: 'string', enum: CommunicationStatus })
   @IsEnum(CommunicationStatus)
   @IsNotEmpty()
   @IsUppercase()
   @IsOptional()
   status?: CommunicationStatus;
 
-  @ApiProperty()
+  @ApiProperty({ default: 'Mario Roberto', description: 'recipient name' })
   @IsString()
   @IsNotEmpty()
   recipient: string;
