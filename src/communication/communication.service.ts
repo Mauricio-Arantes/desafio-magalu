@@ -79,7 +79,7 @@ export class CommunicationService {
       updateCommunicationDto;
 
     const result = await this.prisma.$transaction(async (prisma) => {
-      const communicationUptade = await prisma.communications.update({
+      const communicationUpdate = await prisma.communications.update({
         where: { id },
         data: {
           recipient,
@@ -88,7 +88,7 @@ export class CommunicationService {
         },
       });
 
-      if (communicationUptade['count'] === 0) {
+      if (communicationUpdate['count'] === 0) {
         this.logger.error(`Could not find communication with ID ${id}`);
         throw new HttpException(
           CommunicationErrors.NotFound,
