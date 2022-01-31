@@ -11,7 +11,7 @@ import {
   Post,
   Query,
 } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { CommunicationService } from './communication.service';
 import { CreateCommunicationDto } from './dto/create-communication.dto';
@@ -27,6 +27,8 @@ export class CommunicationController {
   constructor(private readonly communicationService: CommunicationService) {}
 
   @Post()
+  @ApiOperation({ summary: 'Create a communication' })
+  @ApiResponse({ status: 403, description: 'Forbidden.' })
   create(@Body() createCommunicationDto: CreateCommunicationDto) {
     return this.communicationService.create(createCommunicationDto);
   }

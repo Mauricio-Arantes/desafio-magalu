@@ -44,12 +44,12 @@ $ DATABASE_URL="postgresql://root:root@localhost:5432/magalu_db"
 
 # infraestrutura
 $ yarn infra:up
+```
 
-# rodar as migrations
-$ yarn prisma migrate deploy
+## Rodando a aplicação
 
-# atualizar o client do prisma
-$ yarn prisma generate
+```bash
+A aplicação roda no docker, importante checar lá!!!
 ```
 
 ## Testes

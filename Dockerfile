@@ -1,5 +1,5 @@
 # Imagem de origem
-FROM node:16-alpine
+FROM node:16
 
 # localização da aplicação dentro do container
 WORKDIR /backend
@@ -9,9 +9,9 @@ ENV PATH /backend/node_modules/.bin:$PATH
 
 # Instalando as dependências do backend e armazenando em cache
 COPY package.json /backend/package.json
-COPY .env /backend/.env
 RUN yarn global add @nestjs/cli --silent
-RUN yarn install --silent
+RUN yarn install
+RUN ls
 
 # Iniciar a aplicação
 CMD ["yarn", "start:dev"]
