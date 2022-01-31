@@ -2,6 +2,7 @@ import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import * as request from 'supertest';
 
+import { CommunicationErrors } from '../src/api-errors/communication';
 import { CommunicationModule } from '../src/communication/communication.module';
 import { PrismaService } from '../src/database/prisma.service';
 
@@ -87,7 +88,9 @@ describe('CommunicationModule (functional)', () => {
         .get('/communication/19bbd779-55c8-4781-8921-d5337a15c269')
         .set('Accept', 'application/json')
         .expect('Content-Type', /json/)
-        .expect(404);
+        .expect(CommunicationErrors.NotFound.statusCode, {
+          ...CommunicationErrors.NotFound,
+        });
     });
   });
 });
