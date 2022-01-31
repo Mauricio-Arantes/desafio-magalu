@@ -26,7 +26,7 @@ O projeto é um desafio proposta pela [luizalabs](https://www.linkedin.com/compa
 
 O desafio consiste em criar um backend que inicia uma aplicação de comunicação, que consista na criação de sua base para que outros desenvolvedores possam trabalhar nesta base e evoluir o projeto
 
-Para realizar o objetivo, utilizei do framework [Nest](https://nestjs.com/) para criar a base da aplicação, [Postgres](https://www.postgresql.org/) como banco de dados principal, [Jest](https://jestjs.io/pt-BR/) para realizar os testes e tudo isso utilizando [Typescript](https://www.typescriptlang.org/)
+Para realizar o objetivo, utilizei do framework [Nest](https://nestjs.com/) para criar a base da aplicação, [PostgreSql](https://www.postgresql.org/) como banco de dados principal, [Jest](https://jestjs.io/pt-BR/) para realizar os testes e tudo isso utilizando [Typescript](https://www.typescriptlang.org/)
 
 # Instalação
 
@@ -36,14 +36,14 @@ $ yarn
 
 ## Preparando o ambiente
 ```bash
-# infraestrutura
-$ yarn infra:up
-
 # alterar nome do .env.sample para .env
 $ .env
 
 # inserir valor a para DATABASE_URL
 $ DATABASE_URL="postgresql://root:root@localhost:5432/magalu_db"
+
+# infraestrutura
+$ yarn infra:up
 
 # rodar as migrations
 $ yarn prisma deploy
