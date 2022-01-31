@@ -7,6 +7,8 @@ import { CommunicationErrors } from '../src/api-errors/communication';
 import { CommunicationModule } from '../src/communication/communication.module';
 import { PrismaService } from '../src/database/prisma.service';
 
+let prismaService: PrismaService;
+
 const payload = {
   commomResponse: {
     id: '19bbd769-55c8-4781-8921-d5337a15c269',
@@ -28,19 +30,24 @@ const payload = {
   },
 };
 
+const commomPayload = {
+  ...payload.commomResponse,
+  status: CommunicationStatus.SENT,
+};
+
 const mockPrismaRepository = {
   communications: {
     findMany: jest.fn().mockResolvedValueOnce([payload.commomResponse]),
     findUnique: jest.fn().mockResolvedValueOnce(payload.commomResponse),
-    update: jest.fn().mockResolvedValueOnce({
-      ...payload.commomResponse,
-      status: CommunicationStatus.SENT,
-    }),
+    update: jest.fn().mockResolvedValueOnce(commomPayload),
+    delete: jest.fn().mockResolvedValueOnce(payload.commomResponse),
   },
-  $transaction: jest.fn().mockResolvedValueOnce({
-    ...payload.commomResponse,
-    status: CommunicationStatus.SENT,
-  }),
+  $transaction: jest
+    .fn()
+    .mockResolvedValueOnce(commomPayload)
+    .mockResolvedValueOnce(undefined)
+    .mockResolvedValueOnce(commomPayload)
+    .mockResolvedValueOnce(undefined),
 };
 
 describe('CommunicationModule (functional)', () => {
@@ -54,6 +61,7 @@ describe('CommunicationModule (functional)', () => {
       .useValue(mockPrismaRepository)
       .compile();
 
+    prismaService = moduleFixture.get<PrismaService>(PrismaService);
     app = moduleFixture.createNestApplication();
     app.useGlobalPipes(
       new ValidationPipe({
@@ -151,14 +159,14 @@ describe('CommunicationModule (functional)', () => {
   describe('REMOVE', () => {
     it('/communication/:id --> its a valid ID', () => {
       return request(app.getHttpServer())
-        .del('/communication/19bbd799-55c8-4781-8921-d5337a15c269')
+        .delete('/communication/19bbd799-55c8-4781-8921-d5337a15c269')
         .set('Accept', 'application/json')
         .expect(204);
     });
 
     it('/communication/:id --> id its not a valid uuid', () => {
       return request(app.getHttpServer())
-        .del('/communication/19bbd799-55c8-4781-8921-d5337a15c269')
+        .delete('/communication/this-is-not-a-valid-uuid')
         .set('Accept', 'application/json')
         .expect(400, {
           statusCode: 400,
@@ -169,7 +177,7 @@ describe('CommunicationModule (functional)', () => {
 
     it('/communication/:id --> id is not exists', () => {
       return request(app.getHttpServer())
-        .del('/communication/19bbd799-55c8-4781-8921-d5337a15c269')
+        .delete('/communication/19bbd799-55c8-4781-8921-d5337a15c269')
         .set('Accept', 'application/json')
         .expect('Content-Type', /json/)
         .expect(CommunicationErrors.NotFound.statusCode, {
