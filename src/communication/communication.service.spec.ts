@@ -1,9 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import {
-  CommunicationStatus,
-  CommunicationTypes,
-  prisma,
-} from '@prisma/client';
+import { CommunicationStatus, CommunicationTypes } from '@prisma/client';
 
 import { PrismaService } from '../database/prisma.service';
 import { CommunicationService } from './communication.service';
