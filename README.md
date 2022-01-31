@@ -78,6 +78,16 @@ $ yarn test:functional
 $ yarn test:cov
 ```
 
+## Documentação da aplicação
+
+```bash
+# iniciar a aplicação
+$ yarn start:dev
+
+# acessar a url
+$ http://localhost:3000/api/
+```
+
 # Principais comandos
 
 - `start:dev`: inicia a aplicação em `localhost:3000`
