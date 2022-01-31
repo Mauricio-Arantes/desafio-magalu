@@ -52,19 +52,6 @@ $ yarn prisma migrate deploy
 $ yarn prisma generate
 ```
 
-## Rodando a aplicação
-
-```bash
-# desenvolvimento
-$ yarn start
-
-# modo de auto reinicialização
-$ yarn start:dev
-
-# modo de produção
-$ yarn start:prod
-```
-
 ## Testes
 
 ```bash
