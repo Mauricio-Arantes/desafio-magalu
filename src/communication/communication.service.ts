@@ -1,6 +1,5 @@
 import { HttpException, Injectable, Logger } from '@nestjs/common';
 import { Communications } from '@prisma/client';
-import { Cache } from 'cache-manager';
 
 import { CommunicationErrors } from '../api-errors/communication';
 import { PrismaService } from '../database/prisma.service';
@@ -80,7 +79,7 @@ export class CommunicationService {
       updateCommunicationDto;
 
     const result = await this.prisma.$transaction(async (prisma) => {
-      const communication = await prisma.communications.update({
+      const communicationUptade = await prisma.communications.update({
         where: { id },
         data: {
           recipient,
@@ -89,7 +88,7 @@ export class CommunicationService {
         },
       });
 
-      if (communication['count'] === 0) {
+      if (communicationUptade['count'] === 0) {
         this.logger.error(`Could not find communication with ID ${id}`);
         throw new HttpException(
           CommunicationErrors.NotFound,
@@ -97,8 +96,13 @@ export class CommunicationService {
         );
       }
 
-      await prisma.messages.update({
+      const communication = await prisma.communications.findUnique({
         where: { id },
+        include: { message: true },
+      });
+
+      await prisma.messages.update({
+        where: { id: communication.message_id },
         data: {
           ...message,
         },

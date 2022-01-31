@@ -11,6 +11,7 @@ import {
   Post,
   Query,
 } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 
 import { CommunicationService } from './communication.service';
 import { CreateCommunicationDto } from './dto/create-communication.dto';
@@ -21,6 +22,7 @@ import { PatchCommunicationDto } from './dto/patch-communication.dto';
 import { UpdateCommunicationDto } from './dto/update-communication.dto';
 
 @Controller('communication')
+@ApiTags('communication')
 export class CommunicationController {
   constructor(private readonly communicationService: CommunicationService) {}
 
