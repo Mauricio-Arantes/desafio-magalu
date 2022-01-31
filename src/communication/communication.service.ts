@@ -1,10 +1,4 @@
-import {
-  HttpException,
-  Injectable,
-  Logger,
-  CACHE_MANAGER,
-  Inject,
-} from '@nestjs/common';
+import { HttpException, Injectable, Logger } from '@nestjs/common';
 import { Communications } from '@prisma/client';
 import { Cache } from 'cache-manager';
 
@@ -19,14 +13,8 @@ import { UpdateCommunicationDto } from './dto/update-communication.dto';
 
 @Injectable()
 export class CommunicationService {
-  constructor(
-    @Inject(CACHE_MANAGER) private cacheManager: Cache,
-    private prisma: PrismaService,
-  ) {}
+  constructor(private prisma: PrismaService) {}
   private readonly logger = new Logger(CommunicationService.name);
-  private cacheKey(id: string): string {
-    return `Communication--Service--${id}`;
-  }
 
   async create(
     createCommunicationDto: CreateCommunicationDto,
@@ -54,7 +42,6 @@ export class CommunicationService {
       );
     }
 
-    this.cacheManager.set(this.cacheKey(result.id), result);
     return result;
   }
 

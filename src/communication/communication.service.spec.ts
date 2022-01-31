@@ -1,5 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { CommunicationStatus, CommunicationTypes } from '@prisma/client';
+import { Cache } from 'cache-manager';
 
 import { PrismaService } from '../database/prisma.service';
 import { CommunicationService } from './communication.service';
