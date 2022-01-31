@@ -108,14 +108,31 @@ export class CommunicationService {
   }
 
   async remove({ id }: DeleteCommunicationDto) {
-    return await this.prisma.$transaction(async (prisma) => {
+    const result = await this.prisma.$transaction(async (prisma) => {
       const communication = await prisma.communications.delete({
         where: { id },
       });
 
-      await prisma.messages.delete({
+      if (!communication) {
+        this.logger.error(`Could not find communication with ID ${id}`);
+        throw new HttpException(
+          CommunicationErrors.NotFound,
+          CommunicationErrors.NotFound.statusCode,
+        );
+      }
+
+      return await prisma.messages.delete({
         where: { id: communication.message_id },
       });
     });
+
+    if (!result) {
+      this.logger.error(`Could not find communication with ID ${id}`);
+      throw new HttpException(
+        CommunicationErrors.NotFound,
+        CommunicationErrors.NotFound.statusCode,
+      );
+    }
+    return result;
   }
 }
