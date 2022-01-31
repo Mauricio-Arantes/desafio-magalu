@@ -1,6 +1,7 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, Injectable, Logger } from '@nestjs/common';
 import { Communications } from '@prisma/client';
 
+import { CommunicationErrors } from '../api-errors/communication';
 import { PrismaService } from '../database/prisma.service';
 import { CreateCommunicationDto } from './dto/create-communication.dto';
 import { DeleteCommunicationDto } from './dto/delete-communication.dto';
@@ -12,6 +13,7 @@ import { UpdateCommunicationDto } from './dto/update-communication.dto';
 @Injectable()
 export class CommunicationService {
   constructor(private prisma: PrismaService) {}
+  private readonly logger = new Logger(CommunicationService.name);
 
   async create(
     createCommunicationDto: CreateCommunicationDto,
@@ -41,11 +43,20 @@ export class CommunicationService {
     return this.prisma.communications.findMany({ include: { message: true } });
   }
 
-  findOne({ id }: FindOneCommunicationDto) {
-    return this.prisma.communications.findUnique({
+  async findOne({ id }: FindOneCommunicationDto) {
+    const result = await this.prisma.communications.findUnique({
       where: { id },
       include: { message: true },
     });
+
+    if (!result) {
+      this.logger.error(`Could not find user with ID ${id}`);
+      throw new HttpException(
+        CommunicationErrors.NotFound,
+        CommunicationErrors.NotFound.statusCode,
+      );
+    }
+    return result;
   }
 
   update(
