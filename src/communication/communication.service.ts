@@ -50,7 +50,7 @@ export class CommunicationService {
     });
 
     if (!result) {
-      this.logger.error(`Could not find user with ID ${id}`);
+      this.logger.error(`Could not find a communication with ID ${id}`);
       throw new HttpException(
         CommunicationErrors.NotFound,
         CommunicationErrors.NotFound.statusCode,
@@ -59,22 +59,51 @@ export class CommunicationService {
     return result;
   }
 
-  update(
+  async update(
     { id }: PatchCommunicationDto,
     updateCommunicationDto: UpdateCommunicationDto,
   ) {
-    return this.prisma.communications.update({
-      where: { id },
-      data: {
-        ...updateCommunicationDto,
-        message: {
-          update: {
-            ...updateCommunicationDto['message'],
-          },
+    const { recipient, shipping_date, status, message } =
+      updateCommunicationDto;
+    const result = await this.prisma.$transaction(async (prisma) => {
+      const communication = await prisma.communications.update({
+        where: { id },
+        data: {
+          recipient,
+          shipping_date,
+          status,
         },
-      },
-      include: { message: true },
+      });
+
+      if (communication['count'] === 0) {
+        this.logger.error(`Could not find communication with ID ${id}`);
+        throw new HttpException(
+          CommunicationErrors.NotFound,
+          CommunicationErrors.NotFound.statusCode,
+        );
+      }
+
+      await prisma.messages.update({
+        where: { id },
+        data: {
+          ...message,
+        },
+      });
+
+      return await prisma.communications.findUnique({
+        where: { id },
+        include: { message: true },
+      });
     });
+
+    if (!result) {
+      this.logger.error(`Could not find communication with ID ${id}`);
+      throw new HttpException(
+        CommunicationErrors.NotFound,
+        CommunicationErrors.NotFound.statusCode,
+      );
+    }
+    return result;
   }
 
   async remove({ id }: DeleteCommunicationDto) {
