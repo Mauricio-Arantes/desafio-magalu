@@ -3,7 +3,7 @@ import { PrismaClient } from '@prisma/client';
 
 @Injectable()
 export class PrismaService extends PrismaClient implements OnModuleInit {
-  private addDeleteAtOnSearch(params) {
+  private static addDeleteAtOnSearch(params) {
     params.args['where'] = {
       ...params.args['where'],
       deleted_at: null,
@@ -34,21 +34,21 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
       const actions = {
         findUnique: () => {
           params.action = 'findFirst';
-          this.addDeleteAtOnSearch(params);
+          PrismaService.addDeleteAtOnSearch(params);
         },
         update: () => {
           params.action = 'findFirst';
-          this.addDeleteAtOnSearch(params);
+          PrismaService.addDeleteAtOnSearch(params);
         },
         findMany: () => {
-          this.addDeleteAtOnSearch(params);
+          PrismaService.addDeleteAtOnSearch(params);
         },
         updateMany: () => {
-          this.addDeleteAtOnSearch(params);
+          PrismaService.addDeleteAtOnSearch(params);
         },
       };
 
-      actions[params.action];
+      actions[params.action]();
 
       return next(params);
     });
